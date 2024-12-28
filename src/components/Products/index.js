@@ -37,7 +37,24 @@ const WatchPreview = () => {
   }, []);
 
   const handleImageClick = (id) => {
-    navigate(`/products/${id}`); 
+    navigate(`/products/${id}`);
+  };
+
+  const handleAddToCart = async (id) => {
+    try {
+      const product = watches.find((watch) => watch.id === id);
+      if (!product) return;
+
+      const quantity = 1; // Fixed quantity for now
+      await axios.post("https://shopinbackend.onrender.com/cart", {
+        id,
+        quantity,
+      });
+
+      alert("Product added to cart!");
+    } catch (error) {
+      console.error("Error adding item to cart:", error);
+    }
   };
 
   if (loading) {
@@ -53,11 +70,12 @@ const WatchPreview = () => {
             <img
               src={watch.image}
               alt={watch.model}
-              onClick={() => handleImageClick(watch.id)} 
-              style={{ cursor: "pointer" }} // Show pointer cursor on hover
+              onClick={() => handleImageClick(watch.id)}
+              style={{ cursor: "pointer" }}
             />
             <h3>{watch.model}</h3>
             <p>{watch.price}</p>
+            <button onClick={() => handleAddToCart(watch.id)}>Add to Cart</button>
           </div>
         ))}
       </Slider>
